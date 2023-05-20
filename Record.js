@@ -2,16 +2,20 @@ import React, { useState } from 'react';
 import MicrophoneComponent from './MicrophoneComponent';
 import { StyleSheet, View, ScrollView, Button, Text, TextInput} from "react-native";
 import { Audio } from 'expo-av';
+import * as FileSystem from 'expo-file-system';
 
 export default function Record() {
   const [recording, setRecording] = React.useState();
   const [uritext, seturitext] = useState("");
   const [uriFile, seturiFile] = useState("");
-
+  const [text,settext]=useState();
   const [state, setState] = useState(false);
   const [loading, setLoading] = useState(false);
 
-
+  let input = '';
+  const saveUserInput = userInput => {
+    input = userInput;
+  };
 const Done = async () => {
     // start loading
     setLoading(true);
@@ -37,18 +41,16 @@ const Done = async () => {
      * 5. replace "<YourLaptopIP>"" with your IP
      * example: http://192.168.100.5:19006/classify
      */
-    let apiUrl = "http://192.168.1.13:8000/upload-audio/";
-    const fileName = uriFile.split('/').pop();
+    let apiUrl = "http://192.168.1.8:8000/upload-audio/";
     const formData = new FormData();
-    formData.append('audio', {
-        uriFile,
-        name: fileName,
-        type: 'audio/mp3',
-      });
+    const base64 = await FileSystem.readAsStringAsync(uriFile, { encoding: 'base64' });
+    console.log(input)
+    formData.append('audio',base64);
+    formData.append('text',input);
     
 
     
-    console.log(uriFile)
+    console.log(base64)
 
 
     let options = {
@@ -108,7 +110,7 @@ const Done = async () => {
         <View style={styles.row}>
 
          <Button  onPress={() => uritext.replayAsync()} title="Play"></Button>
-         <TextInput style={styles.input} placeholder={'اكتب الحرف'}  />
+         <TextInput style={styles.input} placeholder={'اكتب الحرف'}  onChangeText={userInput => saveUserInput(userInput)}/>
          <Button  title="Done" onPress={() => Done()}></Button>
          </View>
     

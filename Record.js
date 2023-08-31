@@ -41,7 +41,7 @@ const Done = async () => {
      * 5. replace "<YourLaptopIP>"" with your IP
      * example: http://192.168.100.5:19006/classify
      */
-    let apiUrl = "http://192.168.1.8:8000/upload-audio/";
+    let apiUrl = "http://***/upload-audio/";
     const formData = new FormData();
     const base64 = await FileSystem.readAsStringAsync(uriFile, { encoding: 'base64' });
     console.log(input)
